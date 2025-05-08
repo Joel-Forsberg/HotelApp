@@ -1,0 +1,12 @@
+﻿-- 1) Hämta alla rum
+SELECT * FROM Rooms;
+
+-- 2) Hämta kunder vars namn börjar på 'A'
+SELECT CustomerId, Name, CustomerEmail
+  FROM Customers
+ WHERE Name LIKE 'A%';
+
+-- 3) Lista bokningar sorterade på nyaste först
+SELECT BookingId, CustomerId, RoomId, BookingDate
+  FROM Bookings
+ ORDER BY BookingDate DESC;
