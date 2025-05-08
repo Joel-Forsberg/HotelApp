@@ -1,3 +1,1 @@
 # HotelApp
-
-Er.Diagram
