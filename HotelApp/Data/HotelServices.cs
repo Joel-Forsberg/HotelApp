@@ -96,7 +96,7 @@ namespace HotelApp.Data
                       .Include(b => b.Customer)
                       .Include(b => b.Room)
                       .Include(b => b.Payment)
-                      .ToList();              // ← make sure you call ToList()
+                      .ToList();
         }
 
         public Booking GetBookingById(int id)
@@ -156,14 +156,24 @@ namespace HotelApp.Data
             using var ctx = new HotelContext(_options);
             var cutoff = DateTime.Now.AddDays(-10);
             var overdue = ctx.Bookings
-                .Include(b => b.Payment)
-                .Where(b => b.BookingDate <= cutoff && (b.Payment == null || !b.Payment.IsPaid))
-                .ToList();
-
+                             .Include(b => b.Payment)
+                             .Where(b => b.BookingDate <= cutoff && (b.Payment == null || !b.Payment.IsPaid))
+                             .ToList();
             ctx.Payments.RemoveRange(overdue.Where(b => b.Payment != null).Select(b => b.Payment));
             ctx.Bookings.RemoveRange(overdue);
             ctx.SaveChanges();
             return overdue.Count;
+        }
+
+        public List<Payment> GetPayments()
+        {
+            using var ctx = new HotelContext(_options);
+            return ctx.Payments
+                      .Include(p => p.Booking)
+                        .ThenInclude(b => b.Customer)
+                      .Include(p => p.Booking)
+                        .ThenInclude(b => b.Room)
+                      .ToList();
         }
     }
 }
